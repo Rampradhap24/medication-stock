@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pharmacy Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-2 sidebar d-flex flex-column">
+        <h3 class="text-center py-4">💊 MediDash</h3>
+        <a href="dashboard.html"><i class="bi bi-house-door-fill me-2"></i>Dashboard</a>
+        <a href="addmedication.html"><i class="bi bi-plus-square-fill me-2"></i>Add Medication</a>
+        <a href="inventory.html"><i class="bi bi-list-check me-2"></i>Inventory</a>
+        <a href="reports.html"><i class="bi bi-bar-chart-fill me-2"></i>Reports</a>
+        <a href="setting.html"><i class="bi bi-gear-fill me-2"></i>Settings</a>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-10 main">
+        <h2 class="mb-4">Dashboard Overview</h2>
+
+        <div class="row g-4">
+          <!-- Total Medications -->
+          <div class="col-md-3">
+            <div class="card p-3 bg-primary text-white">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5>Total Medications</h5>
+                  <h3 id="totalMedications">0</h3> <!-- Updated -->
+                </div>
+                <div class="icon-box"><i class="bi bi-capsule"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sold -->
+          <div class="col-md-3">
+            <div class="card p-3 bg-success text-white">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5>Sold</h5>
+                  <h3>85</h3>
+                </div>
+                <div class="icon-box"><i class="bi bi-bag-check-fill"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expired -->
+          <div class="col-md-3">
+            <div class="card p-3 bg-danger text-white">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5>Expired</h5>
+                  <h3>10</h3>
+                </div>
+                <div class="icon-box"><i class="bi bi-exclamation-triangle-fill"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Available -->
+          <div class="col-md-3">
+            <div class="card p-3 bg-warning text-dark">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5>Available</h5>
+                  <h3>25</h3>
+                </div>
+                <div class="icon-box"><i class="bi bi-box-seam"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="mt-5">
+          <h4>Stock Analysis</h4>
+          <canvas id="stockChart" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Chart Setup -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const storedMeds = JSON.parse(localStorage.getItem('medications') || '[]');
+
+      const labels = storedMeds.map(m => m.name);
+      const data = storedMeds.map(m => m.quantity);
+
+      const total = storedMeds.reduce((sum, m) => sum + m.quantity, 0);
+      document.getElementById('totalMedications').innerText = total;
+
+      const ctx = document.getElementById('stockChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels.length ? labels : ['Paracetamol', 'Amoxicillin', 'Vitamin C', 'Ibuprofen'],
+          datasets: [{
+            label: 'Quantity in Stock',
+            data: data.length ? data : [50, 20, 30, 10],
+            backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

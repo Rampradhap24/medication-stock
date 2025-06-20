@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h2>Dashboard</h2>
+  <p>Total Medications: <span id="totalMeds">0</span></p>
+  <p>Sold: <span id="sold">0</span></p>
+  <p>Expired: <span id="expired">0</span></p>
+  <p>Available: <span id="available">0</span></p>
+  <canvas id="stockChart" height="100"></canvas>
+
+  <script>
+    async function loadDashboard() {
+      const userId = localStorage.getItem('userId');
+      const res = await fetch(`/medications/${userId}`);
+      const meds = await res.json();
+
+      document.getElementById('totalMeds').textContent = meds.reduce((a, b) => a + b.quantity, 0);
+      document.getElementById('sold').textContent = meds.filter(m => m.status === 'sold').length;
+      document.getElementById('expired').textContent = meds.filter(m => m.status === 'expired').length;
+      document.getElementById('available').textContent = meds.filter(m => m.status === 'available').length;
+
+      const ctx = document.getElementById('stockChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: meds.map(m => m.name),
+          datasets: [{
+            label: 'Quantity',
+            data: meds.map(m => m.quantity),
+            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+    loadDashboard();
+  </script>
+</body>
+</html>
