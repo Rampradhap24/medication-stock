@@ -36,6 +36,30 @@ body {
   .sidebar a:hover {
     background-color: #1abc9c;
   }
+  #logoutBtn {
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    padding: 10px 15px;
+    font-size: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #logoutBtn i {
+    font-size: 18px;
+  }
+  
+  #logoutBtn:hover {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    color: white;
+  }
+  
   
   /* Card hover effect */
   .card {

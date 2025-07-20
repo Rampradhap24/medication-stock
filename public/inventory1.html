@@ -141,23 +141,29 @@
 
       <!-- Main Content -->
       <div class="col-md-10 main-content">
-        <h2>Add Medication</h2>
-
-        <!-- ✅ Success Message -->
-        <div id="successMessage" class="alert alert-success d-none" role="alert">
-          ✅ Medication added successfully!
+        <div id="medForm">
+        <h2 class="mt-4">Inventory</h2>
+        <div class="table-responsive">
+          <table id="inventoryTable" class="table table-striped table-hover table-bordered align-middle shadow-sm">
+            <thead class="table-dark text-center sticky-top">
+              <tr>
+                <th>Name</th>
+                <th>Dosage</th>
+                <th>Quantity</th>
+                <th>Batch</th>
+                <th>Expiration</th>
+              </tr>
+            </thead>
+            <tbody class="text-center align-middle"></tbody>
+          </table>
         </div>
+      </div>
 
-        <!-- Medication Form -->
-        <form id="medForm">
-          <input type="text" id="name" placeholder="Medicine Name" required>
-          <input type="text" id="dosage" placeholder="Dosage (e.g. 500mg)" required>
-          <input type="number" id="quantity" placeholder="Quantity" required>
-          <input type="text" id="batchNumber" placeholder="Batch Number" required>
-          <input type="date" id="expirationDate" required>
-          <button type="submit">Add Medication</button>
-        </form>
-    
+        <!-- Download PDF Button -->
+        <div class="text-end mt-3">
+          <button class="btn btn-outline-primary" onclick="downloadPDF()">
+            <i class="bi bi-download me-1"></i>Download PDF
+          </button>
         </div>
       </div>
     </div>
@@ -167,7 +173,6 @@
   <script>
     const form = document.getElementById('medForm');
     const tableBody = document.querySelector('#inventoryTable tbody');
-    const successMessage = document.getElementById('successMessage');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -184,26 +189,14 @@
         return;
       }
 
-      try {
-        const res = await fetch('http://localhost:5500/api/medications/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
+      await fetch('http://localhost:5500/api/medications/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
 
-        if (res.ok) {
-          successMessage.classList.remove('d-none');
-          setTimeout(() => {
-            successMessage.classList.add('d-none');
-          }, 3000);
-          form.reset();
-          loadInventory();
-        } else {
-          alert("❌ Failed to add medication.");
-        }
-      } catch (error) {
-        alert("❌ Server error: " + error.message);
-      }
+      form.reset();
+      loadInventory();
     });
 
     async function loadInventory() {
@@ -251,3 +244,4 @@
   </script>
 </body>
 </html>
+ 
