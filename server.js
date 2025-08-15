@@ -26,6 +26,34 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/medicatio
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("❌ MongoDB connection error:", err));
 
+// Schema for prosthesis data
+const ProsthesisData = mongoose.model('ProsthesisData', new mongoose.Schema({
+  patientId: String,
+  deviceId: String,
+  pressure: Number,
+  temperature: Number,
+  batteryLevel: Number,
+  usageHours: Number,
+  timestamp: { type: Date, default: Date.now }
+}));
+
+// API to receive data from device
+app.post('/data', async (req, res) => {
+  const data = new ProsthesisData(req.body);
+  await data.save();
+  if (data.pressure > 80) {
+    console.log(`⚠ High pressure alert for patient ${data.patientId}`);
+  }
+  res.send({ message: 'Data saved' });
+});
+
+// API to view last 5 readings
+app.get('/data/:patientId', async (req, res) => {
+  const readings = await ProsthesisData.find({ patientId: req.params.patientId })
+    .sort({ timestamp: -1 })
+    .limit(5);
+  res.send(readings);
+});
 // Schemas and Models
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -143,6 +171,16 @@ app.post('/api/medications/add', async (req, res) => {
     res.status(201).json({ message: 'Medication added' });
   } catch (err) {
     res.status(500).json({ error: 'Error adding medication' });
+  }
+});
+app.get('/available-count', async (req, res) => {
+  try {
+    const result = await Medication.find(); // or SELECT query
+    const availableCount = result.filter(item => item.status === 'available').length;
+    res.json({ availableCount });
+  } catch (err) {
+    console.error('Error fetching available count:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -293,3 +331,5 @@ app.get('/api/medications/chart-data', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${5500}`);
 });
+
+
