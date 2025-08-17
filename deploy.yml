@@ -1,30 +1,49 @@
-name: Deploy to Docker Hub
+# name: Deploy to Docker Hub
+
+# on:
+#   push:
+#     branches:
+#       - main  # Change if your main branch is named differently
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Log in to Docker Hub
+#         run: echo "${{rampradhap}}" | docker login -u "${{ramdocker@24}}" --password-stdin
+
+#       - name: Build Docker image
+#         run: docker build -t rampradhap/stock-app:latest .
+
+#       - name: Push Docker image
+#         run: docker push rampradhap/stock-app:latest
+
+#       - name: Deploy container
+#         run: |
+#           docker run -d \
+#             -e MONGODB_URI="mongodb+srv://medication:medication24@cluster0.wq4nxr4.mongodb.net/meditrack?retryWrites=true&w=majority&appName=Cluster0" \
+#             -p 5500:5500 \
+#             rampradhap/stock-app:latest
+
+
+name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main  # Change if your main branch is named differently
+    branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Log in to Docker Hub
-        run: echo "${{rampradhap}}" | docker login -u "${{ramdocker@24}}" --password-stdin
-
-      - name: Build Docker image
-        run: docker build -t rampradhap/stock-app:latest .
-
-      - name: Push Docker image
-        run: docker push rampradhap/stock-app:latest
-
-      - name: Deploy container
+      - uses: actions/checkout@v3
+      - name: Build Docker Image
+        run: docker build -t rampradhap/medication-stock:latest .
+      - name: Push to Docker Hub
         run: |
-          docker run -d \
-            -e MONGODB_URI="mongodb+srv://medication:medication24@cluster0.wq4nxr4.mongodb.net/meditrack?retryWrites=true&w=majority&appName=Cluster0" \
-            -p 5500:5500 \
-            rampradhap/stock-app:latest
+          echo "${{rampradhap}}" | docker login -u ${{ramdocker@24}} --password-stdin
+          docker push rampradhap/medication-stock:latest
