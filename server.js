@@ -18,6 +18,8 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+console.log("DEBUG: process.env.MONGO_URI =", process.env.MONGO_URI);
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/medicationdb', {
   useNewUrlParser: true,
@@ -25,6 +27,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/medicatio
 })
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("❌ MongoDB connection error:", err));
+
 
 // Schema for prosthesis data
 const ProsthesisData = mongoose.model('ProsthesisData', new mongoose.Schema({

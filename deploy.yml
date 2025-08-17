@@ -25,6 +25,6 @@ jobs:
       - name: Deploy container
         run: |
           docker run -d \
-            -e MONGO_URI="mongodb+srv://stock:${{ secrets.MONGO_PASSWORD }}@stock.btbhos2.mongodb.net/?retryWrites=true&w=majority&appName=stock" \
+            -e MONGODB_URI="mongodb+srv://medication:medication24@cluster0.wq4nxr4.mongodb.net/meditrack?retryWrites=true&w=majority&appName=Cluster0" \
             -p 5500:5500 \
             rampradhap/stock-app:latest
