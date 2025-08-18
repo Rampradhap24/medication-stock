@@ -183,9 +183,9 @@
         alert("Please fill out all fields.");
         return;
       }
-      const baseUrl = "https://medication-stock-latest.onrender.com";
+
       try {
-        const res = await fetch('${baseUrl}/api/medications/add', {
+        const res = await fetch('http://localhost:5500/api/medications/add', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
@@ -207,7 +207,7 @@
     });
 
     async function loadInventory() {
-      const res = await fetch('${baseUrl}/api/medications/inventory');
+      const res = await fetch('http://localhost:5500/api/medications/inventory');
       const meds = await res.json();
       tableBody.innerHTML = '';
       meds.forEach(med => {
@@ -227,7 +227,7 @@
       const doc = new jsPDF();
       doc.text("Medication Inventory", 14, 15);
 
-      const res = await fetch('${baseUrl}/api/medications/inventory');
+      const res = await fetch('http://localhost:5500/api/medications/inventory');
       const meds = await res.json();
 
       const rows = meds.map(med => [
